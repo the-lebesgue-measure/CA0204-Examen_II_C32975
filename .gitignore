@@ -1,0 +1,7 @@
+*.R
+*.Rmd
+*.Rproj
+*.Rhistory
+*.RData
+*.Rds
+*.Ruserdata
