@@ -228,7 +228,7 @@ library(rpart.plot)
 
 # Eliminar indentificacion
 df.mod <- df %>%
-  select(-IDENTIFICACION)   # ajusta el nombre de la columna de ID
+  select(-IDENTIFICACION)
 
 df.mod <- df.mod %>%
   mutate(
