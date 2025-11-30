@@ -25,6 +25,7 @@ Anthonny Flores Rojas (C32975)
 ------------------------------------------------------------------------
 
 # 1
+
 ```{r, warning=FALSE}
 
 # Librerias
@@ -39,6 +40,7 @@ head(df)
 ```
 
 # 2
+
 ```{r}
 
 
@@ -76,16 +78,25 @@ print(summary)
 # 3
 
 ```{r}
+
 df <- df %>%
   mutate(
-    Z_SALARIO = (SALARIO - mean(SALARIO, na.rm = TRUE)) / sd(SALARIO, na.rm = TRUE),
-    Z_EDAD    = (EDAD - mean(EDAD, na.rm = TRUE)) / sd(EDAD, na.rm = TRUE),
-    VALOR_ATIPICO_SALARIO = ifelse(abs(Z_SALARIO) > 1.96, "SI", "NO"),
-    VALOR_ATIPICO_EDAD    = ifelse(abs(Z_EDAD) > 1.96, "SI", "NO")
+    VALOR_ATIPICO_SALARIO = ifelse(!is.na(SALARIO) & abs((SALARIO - mean(SALARIO, na.rm=TRUE))/sd(SALARIO, na.rm=TRUE)) > 1.96, "SI", "NO"),
+    VALOR_ATIPICO_EDAD    = ifelse(!is.na(EDAD)    & abs((EDAD    - mean(EDAD,    na.rm=TRUE))/sd(EDAD,    na.rm=TRUE)) > 1.96, "SI", "NO")
   )
 
+head(df)
 ```
 
+# 4
+
+```{r}
+
+na.percentange <- colMeans(is.na(df)) * 100
+
+print(na.percentange)
+
+```
 
 
 
