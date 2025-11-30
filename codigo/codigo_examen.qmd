@@ -1,5 +1,18 @@
 ---
-title: "codigo_examen"
-format: html
+format:
+  html:
+    self-contained: true
+    theme: darkly
+    code-fold: true 
 ---
+
+```{r, warning=FALSE}
+
+# Librerias
+library(tidyverse)
+library(readr)
+
+df <- read.csv("C:Users/antho/Documents/UCR/Semestre_I_2025/CA0204/Examen2/CA0204-Examen_II_C32975/data/moras.txt", stringsAsFactors = FALSE)
+
+```
 
