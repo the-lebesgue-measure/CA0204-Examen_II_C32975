@@ -5,14 +5,87 @@ format:
     theme: darkly
     code-fold: true 
 ---
+::: text-center
+# UCR
 
+## Escuela de Matemática
+
+### Herramientas de Ciencias de Datos I (CA-0204)
+
+### Examen II
+
+**Profesor**: Luis Juárez Potoy
+
+**Estudiante**:\
+Anthonny Flores Rojas (C32975)
+
+**Fecha**: 30 de noviembre de 2025
+:::
+
+------------------------------------------------------------------------
+
+# 1
 ```{r, warning=FALSE}
 
 # Librerias
 library(tidyverse)
 library(readr)
 
-df <- read.csv("C:Users/antho/Documents/UCR/Semestre_I_2025/CA0204/Examen2/CA0204-Examen_II_C32975/data/moras.txt", stringsAsFactors = FALSE)
+# Data frame con los datos
+df <- read.csv("C:/Users/antho/Documents/UCR/Semestre_I_2025/CA0204/Examen2/CA0204-Examen_II_C32975/data/moras.txt", stringsAsFactors = FALSE)
+ 
+head(df)
 
 ```
+
+# 2
+```{r}
+
+
+# Variables numericas
+numeric <- c("IDENTIFICACION","SALARIO","EDAD")
+
+# Correcion de tipo
+df$SALARIO <- as.numeric(df$SALARIO)
+
+# Resumen
+summary <- df %>%
+  summarise(
+    IDENTIFICACION_promedio = mean(IDENTIFICACION, na.rm = TRUE),
+    IDENTIFICACION_mediana  = median(IDENTIFICACION, na.rm = TRUE),
+    IDENTIFICACION_sd       = sd(IDENTIFICACION, na.rm = TRUE),
+    IDENTIFICACION_min      = min(IDENTIFICACION, na.rm = TRUE),
+    IDENTIFICACION_max      = max(IDENTIFICACION, na.rm = TRUE),
+    
+    SALARIO_promedio = mean(SALARIO, na.rm = TRUE),
+    SALARIO_mediana  = median(SALARIO, na.rm = TRUE),
+    SALARIO_sd       = sd(SALARIO, na.rm = TRUE),
+    SALARIO_min      = min(SALARIO, na.rm = TRUE),
+    SALARIO_max      = max(SALARIO, na.rm = TRUE),
+
+    EDAD_promedio = mean(EDAD, na.rm = TRUE),
+    EDAD_mediana  = median(EDAD, na.rm = TRUE),
+    EDAD_sd       = sd(EDAD, na.rm = TRUE),
+    EDAD_min      = min(EDAD, na.rm = TRUE),
+    EDAD_max      = max(EDAD, na.rm = TRUE)
+  )
+
+print(summary)
+
+```
+# 3
+
+```{r}
+df <- df %>%
+  mutate(
+    Z_SALARIO = (SALARIO - mean(SALARIO, na.rm = TRUE)) / sd(SALARIO, na.rm = TRUE),
+    Z_EDAD    = (EDAD - mean(EDAD, na.rm = TRUE)) / sd(EDAD, na.rm = TRUE),
+    VALOR_ATIPICO_SALARIO = ifelse(abs(Z_SALARIO) > 1.96, "SI", "NO"),
+    VALOR_ATIPICO_EDAD    = ifelse(abs(Z_EDAD) > 1.96, "SI", "NO")
+  )
+
+```
+
+
+
 
