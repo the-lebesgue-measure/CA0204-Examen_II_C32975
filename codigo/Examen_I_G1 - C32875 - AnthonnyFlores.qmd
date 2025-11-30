@@ -53,7 +53,8 @@ head(df)
 numeric <- c("IDENTIFICACION","SALARIO","EDAD")
 
 # Correcion de tipo
-df$SALARIO <- as.numeric(df$SALARIO)
+df$SALARIO <- as.numeric(gsub(",", ".", df$SALARIO))
+
 
 # Resumen
 summary <- df %>%
@@ -183,7 +184,8 @@ for (var in cot) {
       labs(title = paste("Distribucion de morosidad por", var),
            x = var, y = "%") +
       theme_minimal() 
-  plot
+  
+  print(plot) 
 }
 
 # Edad
@@ -196,7 +198,7 @@ df %>%
     geom_col() +
     coord_flip() +
     scale_fill_manual(values = c("SI" = "pink", "NO" = "lightblue")) +
-    labs(title = "Piramide poblacional de EDAD segun morosidad",
+    labs(title = "Distribucion de EDAD segun morosidad",
          x = "Grupo de edad", y = "Frecuencia") +
     theme_minimal()
 
@@ -210,8 +212,8 @@ df %>%
     geom_col() +
     coord_flip() +
     scale_fill_manual(values = c("SI" = "pink", "NO" = "lightblue")) +
-    labs(title = "Piramide poblacional de SALARIO segun morosidad (escala log)",
-         x = "Grupo de salario", y = "Frecuencia (log)") +
+    labs(title = "Distribucion de SALARIO segun morosidad",
+         x = "Grupo de salario", y = "Frecuencia") +
     theme_minimal()
 
 
@@ -221,5 +223,33 @@ df %>%
 
 ```{r}
 
+library(rpart)
+library(rpart.plot)
+
+# Eliminar indentificacion
+df.mod <- df %>%
+  select(-IDENTIFICACION)   # ajusta el nombre de la columna de ID
+
+df.mod <- df.mod %>%
+  mutate(
+    INDICADOR_MOROSO = factor(INDICADOR_MOROSO,
+                              levels = c("SI","NO"),
+                              labels = c("Moroso","No Moroso")),
+    TIPO_ASEGURAMIENTO = if_else(TIPO_ASEGURAMIENTO == "TRABAJADOR INDEPENDIENTE",
+                                 "TRABAJADOR INDEPENDIENTE", "NO")
+  )
+
+
+# Arbol
+tree <- rpart(INDICADOR_MOROSO ~ ., data = df.mod, method = "class")
+
+# Graficar arbol
+rpart.plot(tree, type = 4, extra = 104, box.palette = "Blues", shadow.col = "gray", nn = TRUE, branch.lty = 2)
+
+
+
 ```
 
+Este árbol permite dividir la información en agrupaciones representativas, facilitando el análisis enfocado del indicador de morosidad. A través de esta subdivisión, se identifican los grupos con mayor riesgo: los asegurados independientes (comúnmente conocidos como trabajadores autónomos) presentan el perfil más propenso a la morosidad, y dentro de este grupo, el riesgo se incrementa significativamente en personas extranjeras. Para los nacionales, el riesgo también aumenta si el salario supera los ₡300.000. Esta estructura jerárquica de decisiones permite desglosar y distinguir, mediante probabilidad condicional, la probabilidad de morosidad de cada cliente según sus características.
+
+Estas ideas apoyan los resultados dados en el Excel en los pasos anteriores. El hecho de ser extranjeros y ser independientes generalmente corresponde a personas que no tienen ideales de quedarse en el país, sino de llevar lo ganado a su tierra natal, lo que para ellos implica que el aseguramiento sea más un gasto que una inversión, desde su punto de vista.
